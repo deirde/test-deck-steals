@@ -127,22 +127,19 @@ namespace Deirde\DeckSteals {
     $Game = New Game();
     $_ = $Game->_;
     
-    if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game')
-    {
+    if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game') {
         
         unset($_SESSION[$_]);
         
     }
     
-    if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game')
-    {
+    if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game') {
         
         $_SESSION[$_] = $Game->setupTheGame();
         
     }
     
-    if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card')
-    {
+    if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card') {
      
         $_SESSION[$_]['turn_of'] = $Game->isTheTurnOf($_SESSION[$_]['turn_of']);
         
