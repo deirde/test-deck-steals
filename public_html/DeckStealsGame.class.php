@@ -81,7 +81,7 @@ namespace Deirde\DeckSteals {
         public function setData($key, $value)
         {
             
-            $_SESSION[get_class($this)][$key] = $value;
+            $_SESSION[$this->_()][$key] = $value;
             
         }
         
@@ -97,7 +97,7 @@ namespace Deirde\DeckSteals {
                 unset($data[$key]);
             }
             
-            return $_SESSION[get_class($this)] = $data;
+            return $_SESSION[$this->_()] = $data;
             
         }
         
@@ -107,7 +107,7 @@ namespace Deirde\DeckSteals {
         public function resetData()
         {
             
-            unset($_SESSION[get_class($this)]);
+            unset($_SESSION[$this->_()]);
             
         }
         
