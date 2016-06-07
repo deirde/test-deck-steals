@@ -13,37 +13,128 @@ namespace Deirde\DeckSteals {
     {
         
         /**
-         * The session name.
+         * Triggers the methods basing on the action parameter.
          */
-        var $_ = 'deirde_deck_steals_game';
+        public function __construct()
+        {
+            
+            // Defines the curr action.
+            $action = ((isset($_POST['action'])) ? $_POST['action'] : false);
+            
+            if ($action == 'begin' || $action == 'restart') {
+                
+                // Starts a new game.
+                $this->begin();
+                
+            } elseif ($action == 'next-turn') {
+                
+                // The next turn processes.
+                $this->process($this->getData('currPlayer'));
+                
+                // Defines the curr player.
+                $this->currPlayer();
+                
+            }
+            
+            // Checks if one player is out of cards.
+            $this->gameOver();
+            
+        }
         
         /**
-         * Builds a deck of cards.
-         * @return array
+         * Returns the page title.
          */
-        public function cards()
+        public function pageTitle() {
+            
+            return _(get_class($this));
+            
+        }
+        
+        /**
+         * Defines the session storage name.
+         */
+        public function _()
+        {
+            
+            return get_class($this);
+            
+        }
+        
+        /**
+         * Gets data from the session storage.
+         */
+        public function getData($key) {
+            
+            $response = $_SESSION[$this->_()];
+            
+            if (isset($response[$key])) {
+                return $response[$key];
+            } else {
+                return null;
+            }
+            
+        }
+        
+        /**
+         * Sets data from the session storage.
+         */
+        public function setData($key, $value)
+        {
+            
+            $_SESSION[get_class($this)][$key] = $value;
+            
+        }
+        
+        /**
+         * Unsets a key from the session storage.
+         */
+        public function unsetData($key)
+        {
+            
+            $data = $_SESSION[$this->_()];
+            
+            if (isset($data[$key])) {
+                unset($data[$key]);
+            }
+            
+            return $_SESSION[get_class($this)] = $data;
+            
+        }
+        
+        /**
+         * Resets the session storage.
+         */
+        public function resetData()
+        {
+            
+            unset($_SESSION[get_class($this)]);
+            
+        }
+        
+        /**
+         * Creates the cards for a deck.
+         */
+        private function createCards()
         {
             
             $values = array('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A');
             $suits  = array('S', 'H', 'D', 'C');
             
-            $cards = array();
+            $response = array();
             foreach ($suits as $suit) {
                 foreach ($values as $value) {
-                    $cards[] = $value . $suit;
+                    $response[] = $value . $suit;
                 }
             }
             
-            return $cards;
+            return $response;
             
         }
         
         /**
-         * Shuffles an array of cards.
-         * @param array $cards The array of cards to shuffle.
-         * @return array
+         * Shuffles the deck cards.
          */
-        public function shuffle(array $cards)
+        private function shuffleCards(array $cards)
         {
             
             $total_cards = count($cards);
@@ -63,112 +154,152 @@ namespace Deirde\DeckSteals {
         }
         
         /**
-         * Splits the deck.
+         * Splits the cards between the players.
          */
-        public function split($players = 2)
+        private function splitCards()
         {
             
-            $cards = $this->shuffle($this->cards());
+            $cards = $this->shuffleCards($this->createCards());
             
-            return array_chunk($cards, intval(ceil(sizeof($cards) / $players)));
-            
-        }
-        
-        public function setupTheGame() {
-            
-            $split = $this->split();
-            
-            return [
-                'cards_on_table' => [],
-                'in_progress' => true,
-                'player_1' => [
-                    'deck' => $split[0],
-                ] ,
-                'player_2' => [
-                    'deck' => $split[1],
-                ] ,
-                'turn_of' => 'player_' . rand(1, 2)
-            ];
+            return array_chunk($cards, intval(ceil(sizeof($cards) / 2)));
             
         }
         
         /**
-         * Picks the first card from the deck.
+         * Bootstraps the game.
          */
-        public function pickTheCard($Game) 
+        private function begin()
         {
             
-            return reset($Game);
+            $this->resetData();
+            
+            $splitCards = $this->splitCards();
+            
+            $this->setData('deckPlayer1', $splitCards[0]);
+            $this->setData('deckPlayer2', $splitCards[1]);
+            $this->setData('deckOnTable', []);
+            $this->setData('currPlayer', rand(1, 2));
             
         }
         
         /**
-         *
+         * Define the next turn player.
          */
-        public function isTheTurnOf($current_turn)
+        private function alternatePlayer($currPlayer)
         {
             
-            return (($current_turn == 'player_1') ? 'player_2' : 'player_1');
+            $response = (($currPlayer == 1) ? 2 : 1);
+            $this->setData('currPlayer', $response);
             
         }
         
         /**
-         * Gets the card value.
+         * Defines the curr turn player.
          */
-        public function cardValue($card)
+        private function currPlayer() {
+            
+            $this->alternatePlayer($this->getData('currPlayer'));
+            
+        }
+        
+        private function process($currPlayer)
+        {
+            
+            // The last card of the deck on the table.
+            $prevCardVal = false;
+            if ($this->getData('deckOnTable')) {
+                $prevCard = end($this->getData('deckOnTable'));
+                $prevCardVal = $this->getTheCardVal($prevCard);
+            }
+            
+            // The last player card on the table.
+            $currPlayerDock = $this->getData('deckPlayer' . $currPlayer);
+            $currCard = $this->getTheFirstDeckCard($currPlayerDock);
+            $currCardVal = $this->getTheCardVal($currCard);
+            
+            // Removes the card just played from the player deck.
+            array_shift($currPlayerDock);
+            $this->setData('deckPlayer' . $currPlayer, $currPlayerDock);
+            
+            // Adds the player card into the deck on table
+            $deckOnTable = $this->getData('deckOnTable');
+            $deckOnTable[] = $currCard;
+            $this->setData('deckOnTable', $deckOnTable);
+            
+            // Checks the match.
+            $this->thePlayerTakesTheDeckOnTable($currPlayer, $prevCardVal, $currCardVal);
+            
+        }
+        
+        /**
+         * We've the match.
+         */
+        private function thePlayerTakesTheDeckOnTable($currPlayer, $prevCardVal, $currCardVal) {
+            
+            
+            if ($prevCardVal == $currCardVal) {
+                
+                // New player deck.
+                $currPlayerDock = array_merge($this->getData('deckPlayer' . $currPlayer), $this->getData('deckOnTable'));
+                $this->setData('deckPlayer' . $currPlayer, $currPlayerDock);
+                
+                // Clean the deck on table.
+                $this->unsetData('deckOnTable');
+                
+            }
+            
+        }
+        
+        /**
+         * Gets the numeric value of the given card.
+         */
+        private function getTheCardVal($card)
         {
             
             return substr($card, 0, 1);
             
         }
         
-    }
-    
-    $Game = New Game();
-    $_ = $Game->_;
-    
-    if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game') {
-        
-        unset($_SESSION[$_]);
-        
-    }
-    
-    if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game') {
-        
-        $_SESSION[$_] = $Game->setupTheGame();
-        
-    }
-    
-    if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card') {
-     
-        $_SESSION[$_]['turn_of'] = $Game->isTheTurnOf($_SESSION[$_]['turn_of']);
-        
-        $picked_card = $Game->pickTheCard($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']);
-        
-        $this_card_value = $Game->cardValue($picked_card);
-        
-        if ($_SESSION[$_]['cards_on_table']) {
+        /**
+         * Gets the first card of the deck.
+         */
+        private function getTheFirstDeckCard($deck)
+        {
             
-            $last_card_value = $Game->cardValue(end($_SESSION[$_]['cards_on_table']));
+            return reset($deck);
             
-            if ($this_card_value == $last_card_value) {
+        }
+        
+        /**
+         * Gets the numeric value of the first card on the deck.
+         */
+        private function getTheFirstDeckCardVal($deck)
+        {
+            
+            return $this->getTheCardVal($this->getTheFirstDeckCard($deck));
+            
+        }
+        
+        /**
+         * If a player has no cards left it triggers the end of the game.
+         */
+        private function gameOver()
+        {
+            
+            for ($i = 1; $i <= 2; $i++) {
                 
-                $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'] =  array_merge(
-                    $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'], 
-                    $_SESSION[$_]['cards_on_table']);
-                
-                unset($_SESSION[$_]['cards_on_table']);
+                if (empty($this->getData('deckPlayer' . $i))) {
+                    
+                    $this->setData('gameOver', (($i == 1) ? 2 : 1));
+                    
+                }
                 
             }
             
         }
         
-        $_SESSION[$_]['cards_on_table'][] = $picked_card;
-        
-        array_shift($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']);
-        
     }
-
+    
 }
 
 ?>
