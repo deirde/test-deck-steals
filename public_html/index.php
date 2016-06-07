@@ -1,8 +1,8 @@
 <?php
 
-require_once 'DeckStealsGame.class.php';
+require_once 'StealTheDeckCardGame.class.php';
 
-$Game = New Deirde\DeckSteals\Game();
+$Game = New Deirde\StealTheDeckCardGame\Game();
 
 ?>
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Deirde\DeckSteals {
+namespace Deirde\StealTheDeckCardGame {
     
     /**
      * Opens the session.
