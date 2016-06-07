@@ -53,7 +53,8 @@ $Game = New Deirde\StealTheDeckCardGame\Game();
                                     <ul class="items-wrapper panel panel-warning">
                                         
                                         <h3 class="panel-title">
-                                            <?php echo 'PLAYER' . ' ' . $i; ?>
+                                            
+                                            <?php echo sprintf('Player %s', $i); ?>
                                             
                                             <?php if ($Game->getData('currPlayer') == $i) { ?>
                                                 <small>
