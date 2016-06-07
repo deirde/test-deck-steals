@@ -148,6 +148,7 @@ namespace Deirde\DeckSteals {
                 // Swap the positions of the two cards.
                 $cards[$index] = $card2;
                 $cards[$card2_index] = $card;
+                
             }
             
             return $cards;
@@ -159,7 +160,9 @@ namespace Deirde\DeckSteals {
         private function splitCards()
         {
             
-            $cards = $this->shuffleCards($this->createCards());
+            //$cards = $this->shuffleCards($this->createCards());
+            $cards = $this->createCards();
+            shuffle($cards);
             
             return array_chunk($cards, intval(ceil(sizeof($cards) / 2)));
             
