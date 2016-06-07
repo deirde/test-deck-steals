@@ -69,7 +69,6 @@ $Game = New Deirde\StealTheDeckCardGame\Game();
                                 <?php } ?>
                                 
                                 <ul class="items-wrapper panel panel-success">
-                                    
                                     <h3 class="panel-title">
                                         <?php echo _('Cards on table'); ?>
                                     </h3>
