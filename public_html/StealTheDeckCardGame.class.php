@@ -11,7 +11,7 @@ namespace Deirde\StealTheDeckCardGame {
 
     class Game
     {
-        
+
         /**
          * Triggers the methods basing on the action parameter.
          */
@@ -40,18 +40,20 @@ namespace Deirde\StealTheDeckCardGame {
             $this->gameOver();
             
         }
-        
+
         /**
          * Returns the page title.
+         * @return string
          */
         public function pageTitle() {
             
             return _(get_class($this));
             
         }
-        
+
         /**
          * Defines the session storage name.
+         * @return string
          */
         public function _()
         {
@@ -59,9 +61,11 @@ namespace Deirde\StealTheDeckCardGame {
             return get_class($this);
             
         }
-        
+
         /**
          * Gets data from the session storage.
+         * @param $key
+         * @return mixed
          */
         public function getData($key) {
             
@@ -74,21 +78,24 @@ namespace Deirde\StealTheDeckCardGame {
             }
             
         }
-        
+
         /**
          * Sets data from the session storage.
+         * @param $key
+         * @param $value
          */
-        public function setData($key, $value)
+        private function setData($key, $value)
         {
             
             $_SESSION[$this->_()][$key] = $value;
             
         }
-        
+
         /**
          * Unsets a key from the session storage.
+         * @param $key
          */
-        public function unsetData($key)
+        private function unsetData($key)
         {
             
             $data = $_SESSION[$this->_()];
@@ -97,7 +104,7 @@ namespace Deirde\StealTheDeckCardGame {
                 unset($data[$key]);
             }
             
-            return $_SESSION[$this->_()] = $data;
+            $_SESSION[$this->_()] = $data;
             
         }
         
@@ -110,9 +117,10 @@ namespace Deirde\StealTheDeckCardGame {
             unset($_SESSION[$this->_()]);
             
         }
-        
+
         /**
          * Creates the cards for a deck.
+         * @return array
          */
         private function createCards()
         {
@@ -130,9 +138,11 @@ namespace Deirde\StealTheDeckCardGame {
             return $response;
             
         }
-        
+
         /**
          * Shuffles the deck cards.
+         * @param array $cards
+         * @return array
          */
         private function shuffleCards(array $cards)
         {
@@ -167,7 +177,7 @@ namespace Deirde\StealTheDeckCardGame {
             return array_chunk($cards, intval(ceil(sizeof($cards) / 2)));
             
         }
-        
+
         /**
          * Bootstraps the game.
          */
@@ -184,9 +194,10 @@ namespace Deirde\StealTheDeckCardGame {
             $this->setData('currPlayer', rand(1, 2));
             
         }
-        
+
         /**
          * Define the next turn player.
+         * @param $currPlayer
          */
         private function alternatePlayer($currPlayer)
         {
@@ -195,7 +206,7 @@ namespace Deirde\StealTheDeckCardGame {
             $this->setData('currPlayer', $response);
             
         }
-        
+
         /**
          * Defines the curr turn player.
          */
@@ -204,7 +215,11 @@ namespace Deirde\StealTheDeckCardGame {
             $this->alternatePlayer($this->getData('currPlayer'));
             
         }
-        
+
+        /**
+         * Defines the curr turn player.
+         * @param $currPlayer
+         */
         private function process($currPlayer)
         {
             
@@ -252,9 +267,11 @@ namespace Deirde\StealTheDeckCardGame {
             }
             
         }
-        
+
         /**
          * Gets the numeric value of the given card.
+         * @param $card
+         * @return string
          */
         private function getTheCardVal($card)
         {
@@ -262,19 +279,23 @@ namespace Deirde\StealTheDeckCardGame {
             return substr($card, 0, 1);
             
         }
-        
+
         /**
          * Gets the first card of the deck.
+         * @param $deck
+         * @return mixed
          */
         private function getTheFirstDeckCard($deck)
         {
-            
+
             return reset($deck);
             
         }
-        
+
         /**
          * Gets the numeric value of the first card on the deck.
+         * @param $deck
+         * @return string
          */
         private function getTheFirstDeckCardVal($deck)
         {
