@@ -63,6 +63,24 @@ class Deck
         
     }
     
+    public function setupTheGame() {
+        
+        $split = self::split();
+        
+        return [
+            'cards_on_table' => [],
+            'in_progress' => true,
+            'player_1' => [
+                'deck' => $split[0],
+            ] ,
+            'player_2' => [
+                'deck' => $split[1],
+            ] ,
+            'turn_of' => 'player_' . rand(1, 2)
+        ];
+        
+    }
+    
     /**
      * Picks the first card from the deck.
      */
@@ -75,14 +93,27 @@ class Deck
     /**
      *
      */
-    public function isTheTurnOf() {
+    public function isTheTurnOf($players = 2) {
+        
+        
+        
     }
     
     /**
      *
      */
     public function cardValue($card) {
+        
+        return substr($card, 0, 1);
+        
     }
+    
+    /**
+     * 
+     */
+     public function mergeDecks() {
+         
+     }
     
     
     

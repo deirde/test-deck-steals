@@ -4,30 +4,24 @@ require_once 'Deck.class.php';
 $_ = 'deck-steals-game';
 $deck = New Deck();
     
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE)
+{
+    
     session_start();
+    
 }
 
-if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game') {
+if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game')
+{
     
     unset($_SESSION[$_]);
-    $deck = New Deck();
     
 }
 
-//var_dump($_SESSION[$_]);
-
-if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game') {
+if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game')
+{
     
-    $_SESSION[$_]['cards_on_table'] = [];
-    
-    $_SESSION[$_]['in-progress'] = true;
-    
-    $split = $deck::split();
-    
-    $_SESSION[$_]['player_1']['deck'] = $split[0];
-    $_SESSION[$_]['player_2']['deck'] = $split[1];
-    $_SESSION[$_]['turn_of'] = 'player_1';
+    $_SESSION[$_] = $deck->setupTheGame();
     
 }
 
@@ -36,15 +30,18 @@ if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card') {
     $_SESSION[$_]['turn_of'] = (($_SESSION[$_]['turn_of'] == 'player_1') ? 'player_2' : 'player_1');
     
     $picked_card = $deck::pickTheCard($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']);
-    $this_card_number = substr($picked_card, 0, 1);
+    $this_card_value = substr($picked_card, 0, 1);
     
     if ($_SESSION[$_]['cards_on_table']) {
-        $last_card_number = end($_SESSION[$_]['cards_on_table']);
-        $last_card_number = substr($last_card_number, 0, 1);
         
-        if ($this_card_number == $last_card_number) {
+        $last_card_value = end($_SESSION[$_]['cards_on_table']);
+        $last_card_value = substr($last_card_value, 0, 1);
+        
+        if ($this_card_value == $last_card_value) {
             
-            $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'] = array_merge($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'], $_SESSION[$_]['cards_on_table']);
+            $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'] =  array_merge(
+                $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'], 
+                $_SESSION[$_]['cards_on_table']);
             
             unset($_SESSION[$_]['cards_on_table']);
             
@@ -60,7 +57,8 @@ if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card') {
 
 ?>
 
-<?php if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card' && count($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']) == 0) { ?>
+<?php if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card' && 
+    count($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']) == 0) { ?>
 
     <b>
         <?php echo $_SESSION[$_]['turn_of'] . ' WIN!'; ?>
@@ -75,7 +73,7 @@ if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card') {
 <?php } ?>
 
 <?php if (isset($_SESSION[$_]) 
-    && $_SESSION[$_]['in-progress'] == true) { ?>
+    && $_SESSION[$_]['in_progress'] == true) { ?>
     
     <?php for ($i = 1; $i <= 2; $i++) { ?>
         <hr />
