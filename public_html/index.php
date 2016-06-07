@@ -41,28 +41,23 @@ $Game = New Deirde\StealTheDeckCardGame\Game();
                             </div>
                         
                         <?php } else { ?>
-                
+                        
                             <?php if (empty($Game->_())) { ?>
                             
                                 <input type="submit" class="btn btn-lg btn-info" value="begin" name="action">
                             
                             <?php } else { ?>
-                                    
+                            
                                 <?php for ($i = 1; $i <= 2; $i++) { ?>
-                                
                                     <ul class="items-wrapper panel panel-warning">
-                                        
                                         <h3 class="panel-title">
-                                            
                                             <?php echo sprintf('Player %s', $i); ?>
-                                            
                                             <?php if ($Game->getData('currPlayer') == $i) { ?>
                                                 <small>
                                                     <?php echo _('The current player'); ?>
                                                 </small>
                                             <?php } ?>
                                         </h3>
-                                
                                         <?php foreach ($Game->getData('deckPlayer' . $i) as $card) { ?>
                                             <li>
                                                 <span>
@@ -70,10 +65,7 @@ $Game = New Deirde\StealTheDeckCardGame\Game();
                                                 </span>
                                             </li>
                                         <?php } ?>
-                                    
                                     </ul>
-                                
-                                
                                 <?php } ?>
                                 
                                 <ul class="items-wrapper panel panel-success">
