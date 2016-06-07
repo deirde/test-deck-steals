@@ -15,11 +15,7 @@ namespace Deirde\DeckSteals {
         /**
          * The session name.
          */
-        public function _() {
-            
-            return uniqid();
-            
-        }
+        var $_ = 'deirde_deck_steals_game';
         
         /**
          * Builds a deck of cards.
@@ -127,9 +123,9 @@ namespace Deirde\DeckSteals {
         }
         
     }
-
-    $_ = 'deck-steals-game';
+    
     $Game = New Game();
+    $_ = $Game->_;
     
     if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game')
     {
