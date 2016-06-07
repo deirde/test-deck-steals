@@ -1,4 +1,4 @@
-# TEST - DECK STEALS #
+# TEST - STEAL THE DECK CARD GAME #
 
 Specs
 -----
