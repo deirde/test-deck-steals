@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Contains methods for interacting with a deck of cards.
- * 
- * @author Daniel Sposito <daniel.g.sposito@gmail.com>
- */
 class Deck
 {
     /**
@@ -55,7 +50,8 @@ class Deck
     /**
      * Splits the deck.
      */
-    public static function split($players = 2) {
+    public static function split($players = 2)
+    {
         
         $cards = self::shuffle(self::cards());
         
@@ -84,7 +80,8 @@ class Deck
     /**
      * Picks the first card from the deck.
      */
-    public function pickTheCard($deck) {
+    public function pickTheCard($deck) 
+    {
         
         return reset($deck);
         
@@ -93,30 +90,77 @@ class Deck
     /**
      *
      */
-    public function isTheTurnOf($players = 2) {
+    public function isTheTurnOf($current_turn)
+    {
         
-        
+        return (($current_turn == 'player_1') ? 'player_2' : 'player_1');
         
     }
     
     /**
-     *
+     * Gets the card value.
      */
-    public function cardValue($card) {
+    public function cardValue($card)
+    {
         
         return substr($card, 0, 1);
         
     }
     
-    /**
-     * 
-     */
-     public function mergeDecks() {
-         
-     }
+}
+
+$_ = 'deck-steals-game';
+$deck = New Deck();
     
+if (session_status() == PHP_SESSION_NONE)
+{
     
+    session_start();
     
+}
+
+if (isset($_GET['submit']) && $_GET['submit'] == 'restart-game')
+{
+    
+    unset($_SESSION[$_]);
+    
+}
+
+if (isset($_GET['submit']) && $_GET['submit'] == 'start-the-game')
+{
+    
+    $_SESSION[$_] = $deck->setupTheGame();
+    
+}
+
+if (isset($_GET['submit']) && $_GET['submit'] == 'pick-a-card')
+{
+ 
+    $_SESSION[$_]['turn_of'] = $deck->isTheTurnOf($_SESSION[$_]['turn_of']);
+    
+    $picked_card = $deck::pickTheCard($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']);
+    
+    $this_card_value = $deck->cardValue($picked_card);
+    
+    if ($_SESSION[$_]['cards_on_table']) {
+        
+        $last_card_value = $deck->cardValue(end($_SESSION[$_]['cards_on_table']));
+        
+        if ($this_card_value == $last_card_value) {
+            
+            $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'] =  array_merge(
+                $_SESSION[$_][$_SESSION[$_]['turn_of']]['deck'], 
+                $_SESSION[$_]['cards_on_table']);
+            
+            unset($_SESSION[$_]['cards_on_table']);
+            
+        }
+        
+    }
+    
+    $_SESSION[$_]['cards_on_table'][] = $picked_card;
+    
+    array_shift($_SESSION[$_][$_SESSION[$_]['turn_of']]['deck']);
     
 }
 
