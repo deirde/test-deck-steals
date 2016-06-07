@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Deck.class.php';
+require_once 'DeckStealsGame.class.php';
 
 ?>
 
