@@ -69,13 +69,18 @@ namespace Deirde\StealTheDeckCardGame {
          */
         public function getData($key) {
             
-            $response = $_SESSION[$this->_()];
+            $response = null;
             
-            if (isset($response[$key])) {
-                return $response[$key];
-            } else {
-                return null;
+            if (isset($_SESSION[$this->_()])) {
+                $response = $_SESSION[$this->_()];
+                if (isset($response[$key])) {
+                    $response = $response[$key];
+                } else {
+                    $response = null;
+                }
             }
+            
+            return $response;
             
         }
 
@@ -310,14 +315,18 @@ namespace Deirde\StealTheDeckCardGame {
         private function gameOver()
         {
             
-            for ($i = 1; $i <= 2; $i++) {
-                
-                if (empty($this->getData('deckPlayer' . $i))) {
+            if (!is_null($this->getData('deckOnTable'))) {
+            
+                for ($i = 1; $i <= 2; $i++) {
                     
-                    $this->setData('gameOver', (($i == 1) ? 2 : 1));
+                    if (empty($this->getData('deckPlayer' . $i))) {
+                        
+                        $this->setData('gameOver', (($i == 1) ? 2 : 1));
+                        
+                    }
                     
                 }
-                
+            
             }
             
         }
