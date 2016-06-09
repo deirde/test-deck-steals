@@ -315,7 +315,7 @@ namespace Deirde\StealTheDeckCardGame {
         private function gameOver()
         {
             
-            if (!is_null($this->getData('deckOnTable'))) {
+            if ($this->getData('deckPlayer1') || $this->getData('deckPlayer2')) {
             
                 for ($i = 1; $i <= 2; $i++) {
                     
