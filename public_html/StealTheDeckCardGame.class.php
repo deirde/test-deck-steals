@@ -33,11 +33,11 @@ namespace Deirde\StealTheDeckCardGame {
                 
                 // Defines the curr player.
                 $this->currPlayer();
+            
+                // Checks if one player is out of cards.
+                $this->gameOver();
                 
             }
-            
-            // Checks if one player is out of cards.
-            $this->gameOver();
             
         }
 
@@ -315,18 +315,14 @@ namespace Deirde\StealTheDeckCardGame {
         private function gameOver()
         {
             
-            if ($this->getData('deckPlayer1') || $this->getData('deckPlayer2')) {
-            
-                for ($i = 1; $i <= 2; $i++) {
+            for ($i = 1; $i <= 2; $i++) {
+                
+                if (empty($this->getData('deckPlayer' . $i))) {
                     
-                    if (empty($this->getData('deckPlayer' . $i))) {
-                        
-                        $this->setData('gameOver', (($i == 1) ? 2 : 1));
-                        
-                    }
+                    $this->setData('gameOver', (($i == 1) ? 2 : 1));
                     
                 }
-            
+                
             }
             
         }
