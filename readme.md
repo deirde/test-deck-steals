@@ -15,6 +15,3 @@ Note
 This is a technical test.<br/>
 TIME: 90 minutes (for a working draft).<br/>
 TIME: 150 minutes (for a clean OO version).<br/>
-http://test-deck-steals.123beta.net/<br/>
-Uid: test123<br/>
-Psw: test123
