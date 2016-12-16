@@ -1,5 +1,7 @@
 # TEST - STEAL THE DECK CARD GAME #
 
+![ScreenShot](https://github.com/deirde/test-steal-the-deck-card-game/blob/master/.rs/screenshot-01.png)
+
 Specs
 -----
 Here are the rules of the game:<br/>
